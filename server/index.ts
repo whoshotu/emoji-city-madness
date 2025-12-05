@@ -3,6 +3,7 @@ import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import path from 'path';
 import { GameState } from './gameState';
+import { analytics } from './analytics';
 
 const app = express();
 const httpServer = createServer(app);
@@ -36,6 +37,7 @@ io.on('connection', (socket: Socket) => {
         id: socket.id,
         players: Array.from(gameState.players.values())
     });
+    analytics.track('session_start', socket.id);
 
     // Broadcast new player
     socket.broadcast.emit('playerJoined', player);
@@ -44,6 +46,7 @@ io.on('connection', (socket: Socket) => {
         console.log('Player disconnected:', socket.id);
         gameState.removePlayer(socket.id);
         io.emit('playerLeft', socket.id);
+        analytics.track('session_end', socket.id);
     });
 
     socket.on('move', (pos: { x: number, y: number }) => {

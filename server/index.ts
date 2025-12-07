@@ -69,5 +69,24 @@ io.on('connection', (socket: Socket) => {
 });
 
 httpServer.listen(Number(PORT), '0.0.0.0', () => {
+    console.log(`========================================`);
     console.log(`Server running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV}`);
+    console.log(`Host: 0.0.0.0`);
+    console.log(`========================================`);
+});
+
+// Error handling
+httpServer.on('error', (error: any) => {
+    console.error('Server error:', error);
+    if (error.code === 'EADDRINUSE') {
+        console.error(`Port ${PORT} is already in use`);
+    }
+});
+
+process.on('SIGTERM', () => {
+    console.log('SIGTERM signal received: closing HTTP server');
+    httpServer.close(() => {
+        console.log('HTTP server closed');
+    });
 });

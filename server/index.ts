@@ -28,40 +28,8 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-import { postManager } from './posts';
-
 // Middleware for parsing JSON
 app.use(express.json());
-
-// --- CRUD API Implementation ---
-// 1. CREATE
-app.post('/api/posts', (req, res) => {
-    const { content, author } = req.body;
-    if (!content) return res.status(400).json({ error: 'Content required' });
-    const post = postManager.create(content, author || 'Anonymous');
-    res.status(201).json(post);
-});
-
-// 2. READ
-app.get('/api/posts', (req, res) => {
-    res.json(postManager.getAll());
-});
-
-// 3. UPDATE
-app.put('/api/posts/:id', (req, res) => {
-    const { content } = req.body;
-    const post = postManager.update(req.params.id, content);
-    if (!post) return res.status(404).json({ error: 'Post not found' });
-    res.json(post);
-});
-
-// 4. DELETE
-app.delete('/api/posts/:id', (req, res) => {
-    const success = postManager.delete(req.params.id);
-    if (!success) return res.status(404).json({ error: 'Post not found' });
-    res.status(204).send();
-});
-// -------------------------------
 
 io.on('connection', (socket: Socket) => {
     console.log('Player connected:', socket.id);

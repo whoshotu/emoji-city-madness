@@ -14,9 +14,6 @@ COPY . .
 # Build client and server
 RUN npm run build
 
-# Remove devDependencies to reduce image size (optional)
-RUN npm prune --production
-
 # Set environment
 ENV NODE_ENV=production
 ENV PORT=3000

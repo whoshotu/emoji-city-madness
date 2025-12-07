@@ -16,8 +16,8 @@ RUN npm run build
 
 # Set environment
 ENV NODE_ENV=production
-ENV PORT=3000
 
+# Don't hardcode PORT - Render sets it dynamically
 EXPOSE 3000
 
 CMD ["npm", "start"]

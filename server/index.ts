@@ -28,6 +28,11 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
+// Health check endpoint for Render
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: Date.now() });
+});
+
 // Middleware for parsing JSON
 app.use(express.json());
 

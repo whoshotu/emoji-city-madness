@@ -1,30 +1,28 @@
-import React, { useState } from 'react';
-import GameCanvas from './components/GameCanvas';
-import UIOverlay from './components/UIOverlay';
+import { useEffect, useRef } from 'react';
+import { createGame } from './game/config';
+import './index.css';
 
-const App: React.FC = () => {
-    const [inGame, setInGame] = useState(false);
+function App() {
+    const gameRef = useRef<Phaser.Game | null>(null);
+
+    useEffect(() => {
+        if (!gameRef.current) {
+            gameRef.current = createGame();
+        }
+
+        return () => {
+            if (gameRef.current) {
+                gameRef.current.destroy(true);
+                gameRef.current = null;
+            }
+        };
+    }, []);
 
     return (
-        <div className="app-container">
-            {!inGame ? (
-                <div style={{ textAlign: 'center', marginTop: '20vh' }}>
-                    <h1>Emoji City MMO</h1>
-                    <button
-                        style={{ fontSize: '2rem', padding: '1rem 2rem', cursor: 'cursor' }}
-                        onClick={() => setInGame(true)}
-                    >
-                        Enter City 🏙️
-                    </button>
-                </div>
-            ) : (
-                <>
-                    <GameCanvas />
-                    <UIOverlay />
-                </>
-            )}
+        <div className="App">
+            <div id="game-container" />
         </div>
     );
-};
+}
 
 export default App;

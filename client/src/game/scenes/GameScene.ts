@@ -3,6 +3,7 @@ import { socket } from '../../socket';
 import { Player } from '../entities/Player';
 import { Vehicle } from '../entities/Vehicle';
 import { NPC } from '../entities/NPC';
+import { CollectibleSpawner } from '../entities/Collectible';
 import { CityMap } from '../systems/CityMap';
 import { SoundManager } from '../systems/SoundManager';
 import { ChaosSystem } from '../systems/ChaosSystem';
@@ -23,6 +24,9 @@ export class GameScene extends Phaser.Scene {
     private soundManager!: SoundManager;
     private chaosSystem!: ChaosSystem;
     private npcs: NPC[] = [];
+    private collectibleSpawner!: CollectibleSpawner;
+    private coinCount: number = 0;
+    private coinText!: Phaser.GameObjects.Text;
 
     // Smooth movement physics
     private maxWalkSpeed: number = 200;
@@ -92,6 +96,11 @@ export class GameScene extends Phaser.Scene {
 
         // Spawn NPCs
         this.spawnNPCs();
+
+        // Spawn collectibles
+        this.collectibleSpawner = new CollectibleSpawner(this);
+        this.collectibleSpawner.spawnInitial(15, mapSize.width, mapSize.height);
+        this.collectibleSpawner.startRespawning(10000);
 
         // HUD
         this.createHUD();
@@ -244,6 +253,13 @@ export class GameScene extends Phaser.Scene {
             soundBtn.setText(muted ? '🔇' : '🔊');
         });
         hud.add(soundBtn);
+
+        // Coin counter
+        this.coinText = this.add.text(this.cameras.main.width - 130, 10, '💰 0', {
+            fontSize: '20px', fontFamily: 'Arial', color: '#ffff00',
+            backgroundColor: '#000000cc', padding: { x: 10, y: 6 }
+        });
+        hud.add(this.coinText);
     }
 
     update(_time: number, delta: number) {
@@ -332,6 +348,15 @@ export class GameScene extends Phaser.Scene {
             this.vehicleStatusText.setText(this.inVehicle && this.currentVehicle
                 ? `🚗 Driving ${this.currentVehicle.vehicleType.toUpperCase()} | [E] to Exit`
                 : '');
+        }
+
+        // Check for collectible pickup
+        const collectible = this.collectibleSpawner.checkCollection(this.player.x, this.player.y);
+        if (collectible) {
+            this.coinCount += collectible.value;
+            this.coinText.setText(`💰 ${this.coinCount}`);
+            this.soundManager.play('coin');
+            collectible.collect();
         }
     }
 

@@ -132,6 +132,53 @@ export class CityMap {
         this.addZoneLabel(200, 100, '🏙️ DOWNTOWN');
         this.addZoneLabel(this.mapWidth * this.tileSize - 150, this.mapHeight * this.tileSize - 80, '🏖️ BEACH');
         this.addZoneLabel(200, this.mapHeight * this.tileSize - 100, '🌳 PARK');
+
+        // Add decorations
+        this.addDecorations(map);
+    }
+
+    private addDecorations(map: number[][]) {
+        // Trees in park area (bottom left)
+        const treePositions = [
+            { x: 100, y: 700 }, { x: 180, y: 750 }, { x: 80, y: 800 },
+            { x: 250, y: 720 }, { x: 150, y: 850 }, { x: 300, y: 800 },
+        ];
+        treePositions.forEach(pos => {
+            this.scene.add.text(pos.x, pos.y, '🌳', { fontSize: '32px' }).setOrigin(0.5);
+        });
+
+        // Palm trees at beach
+        const palmPositions = [
+            { x: 1150, y: 800 }, { x: 1200, y: 850 }, { x: 1100, y: 880 },
+        ];
+        palmPositions.forEach(pos => {
+            this.scene.add.text(pos.x, pos.y, '🌴', { fontSize: '28px' }).setOrigin(0.5);
+        });
+
+        // Benches along sidewalks
+        const benchPositions = [
+            { x: 350, y: 400 }, { x: 550, y: 400 }, { x: 750, y: 400 },
+        ];
+        benchPositions.forEach(pos => {
+            this.scene.add.text(pos.x, pos.y, '🪑', { fontSize: '20px' }).setOrigin(0.5);
+        });
+
+        // Street lamps
+        const lampPositions = [
+            { x: 200, y: 450 }, { x: 450, y: 450 }, { x: 700, y: 450 },
+            { x: 950, y: 450 }, { x: 600, y: 200 }, { x: 600, y: 650 },
+        ];
+        lampPositions.forEach(pos => {
+            this.scene.add.text(pos.x, pos.y, '🏮', { fontSize: '18px' }).setOrigin(0.5);
+        });
+
+        // Trash cans
+        [{ x: 380, y: 420 }, { x: 780, y: 420 }].forEach(pos => {
+            this.scene.add.text(pos.x, pos.y, '🗑️', { fontSize: '16px' }).setOrigin(0.5);
+        });
+
+        // Beach umbrella
+        this.scene.add.text(1180, 830, '⛱️', { fontSize: '32px' }).setOrigin(0.5);
     }
 
     private addZoneLabel(x: number, y: number, text: string) {

@@ -7,6 +7,8 @@ import { CollectibleSpawner } from '../entities/Collectible';
 import { CityMap } from '../systems/CityMap';
 import { SoundManager } from '../systems/SoundManager';
 import { ChaosSystem } from '../systems/ChaosSystem';
+import { MissionSystem } from '../systems/MissionSystem';
+import { Minimap } from '../systems/Minimap';
 
 export class GameScene extends Phaser.Scene {
     private player!: Player;
@@ -27,6 +29,9 @@ export class GameScene extends Phaser.Scene {
     private collectibleSpawner!: CollectibleSpawner;
     private coinCount: number = 0;
     private coinText!: Phaser.GameObjects.Text;
+    private missionSystem!: MissionSystem;
+    private minimap!: Minimap;
+    private chatCount: number = 0;
 
     // Smooth movement physics
     private maxWalkSpeed: number = 200;
@@ -101,6 +106,17 @@ export class GameScene extends Phaser.Scene {
         this.collectibleSpawner = new CollectibleSpawner(this);
         this.collectibleSpawner.spawnInitial(15, mapSize.width, mapSize.height);
         this.collectibleSpawner.startRespawning(10000);
+
+        // Mission system
+        this.missionSystem = new MissionSystem(this, (mission) => {
+            // Award mission rewards
+            this.coinCount += mission.reward.coins;
+            this.coinText.setText(`💰 ${this.coinCount}`);
+            this.soundManager.play('levelUp');
+        });
+
+        // Minimap
+        this.minimap = new Minimap(this, mapSize.width, mapSize.height);
 
         // HUD
         this.createHUD();
@@ -234,6 +250,8 @@ export class GameScene extends Phaser.Scene {
                 socket.emit('chat', emoji);
                 this.player.showChatBubble(emoji);
                 this.soundManager.play('pop');
+                this.chatCount++;
+                this.missionSystem.addProgress('social');
             });
             hud.add(btn);
         });
@@ -356,8 +374,12 @@ export class GameScene extends Phaser.Scene {
             this.coinCount += collectible.value;
             this.coinText.setText(`💰 ${this.coinCount}`);
             this.soundManager.play('coin');
+            this.missionSystem.addProgress('collect', collectible.value);
             collectible.collect();
         }
+
+        // Update minimap
+        this.minimap.updatePlayerPosition(this.player.x, this.player.y);
     }
 
     private enterVehicle(vehicle: Vehicle) {

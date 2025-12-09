@@ -2,8 +2,10 @@ import Phaser from 'phaser';
 import { socket } from '../../socket';
 import { Player } from '../entities/Player';
 import { Vehicle } from '../entities/Vehicle';
+import { NPC } from '../entities/NPC';
 import { CityMap } from '../systems/CityMap';
 import { SoundManager } from '../systems/SoundManager';
+import { ChaosSystem } from '../systems/ChaosSystem';
 
 export class GameScene extends Phaser.Scene {
     private player!: Player;
@@ -19,6 +21,8 @@ export class GameScene extends Phaser.Scene {
     private inVehicle: boolean = false;
     private vehicleStatusText!: Phaser.GameObjects.Text;
     private soundManager!: SoundManager;
+    private chaosSystem!: ChaosSystem;
+    private npcs: NPC[] = [];
 
     // Smooth movement physics
     private maxWalkSpeed: number = 200;
@@ -37,6 +41,9 @@ export class GameScene extends Phaser.Scene {
     create() {
         // Initialize sound manager
         this.soundManager = new SoundManager(this);
+
+        // Initialize chaos system (brainrot events)
+        this.chaosSystem = new ChaosSystem(this);
 
         // Generate city map
         this.cityMap = new CityMap(this);
@@ -83,12 +90,30 @@ export class GameScene extends Phaser.Scene {
         // Socket.IO events
         this.setupSocketEvents();
 
+        // Spawn NPCs
+        this.spawnNPCs();
+
         // HUD
         this.createHUD();
 
         // Click anywhere to enable audio (browser requirement)
         this.input.once('pointerdown', () => {
             this.soundManager.play('pop');
+        });
+    }
+
+    private spawnNPCs() {
+        const npcData = [
+            { x: 200, y: 200, name: 'DJ Skibidi', emoji: '🎧', color: 0xff00ff },
+            { x: 400, y: 150, name: 'Chad', emoji: '💪', color: 0xff6600 },
+            { x: 600, y: 300, name: 'Rizz Lord', emoji: '😏', color: 0x00aaff },
+            { x: 150, y: 500, name: 'Karen', emoji: '💅', color: 0xff69b4 },
+            { x: 800, y: 400, name: 'Sigma', emoji: '🐺', color: 0x333333 },
+            { x: 500, y: 600, name: 'NPC #42', emoji: '🤖', color: 0x888888 },
+        ];
+        npcData.forEach(data => {
+            const npc = new NPC(this, data.x, data.y, data.name, data.emoji, data.color);
+            this.npcs.push(npc);
         });
     }
 

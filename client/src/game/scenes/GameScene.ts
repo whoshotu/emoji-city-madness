@@ -9,6 +9,7 @@ import { SoundManager } from '../systems/SoundManager';
 import { ChaosSystem } from '../systems/ChaosSystem';
 import { MissionSystem } from '../systems/MissionSystem';
 import { Minimap } from '../systems/Minimap';
+import { Leaderboard } from '../systems/Leaderboard';
 
 export class GameScene extends Phaser.Scene {
     private player!: Player;
@@ -31,6 +32,7 @@ export class GameScene extends Phaser.Scene {
     private coinText!: Phaser.GameObjects.Text;
     private missionSystem!: MissionSystem;
     private minimap!: Minimap;
+    private leaderboard!: Leaderboard;
     private chatCount: number = 0;
 
     // Smooth movement physics
@@ -117,6 +119,9 @@ export class GameScene extends Phaser.Scene {
 
         // Minimap
         this.minimap = new Minimap(this, mapSize.width, mapSize.height);
+
+        // Leaderboard
+        this.leaderboard = new Leaderboard(this);
 
         // HUD
         this.createHUD();
@@ -375,6 +380,7 @@ export class GameScene extends Phaser.Scene {
             this.coinText.setText(`💰 ${this.coinCount}`);
             this.soundManager.play('coin');
             this.missionSystem.addProgress('collect', collectible.value);
+            this.leaderboard.addLocalPlayer(this.playerId || 'YOU', 'YOU', this.coinCount, '😀');
             collectible.collect();
         }
 

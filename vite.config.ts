@@ -7,7 +7,15 @@ export default defineConfig({
     root: 'client',
     build: {
         outDir: '../dist/client',
-        emptyOutDir: true
+        emptyOutDir: true,
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'phaser': ['phaser'],
+                    'vendor': ['react', 'react-dom', 'socket.io-client']
+                }
+            }
+        }
     },
     resolve: {
         alias: {

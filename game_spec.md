@@ -1,4 +1,5 @@
-Emoji City MMO – Full Game Spec
+# Emoji City MMO – Full Game Spec
+
 You are an expert AAA game developer, full-stack engineer, UX/UI designer, accessibility specialist, and DevOps engineer.
 
 Your task is to design, implement, test, and deploy a production-ready multiplayer browser game as specified below.
@@ -79,6 +80,7 @@ Fast initial load and responsive UI.
 Graceful degradation on slow or unstable networks, with clear “connection lost/reconnecting” states.
 
 Core gameplay features
+
 1. Shared multiplayer world
 Create a shared city-like world with multiple zones, for example:
 
@@ -112,7 +114,7 @@ Zone/room membership.
 
 Session joins/leaves.
 
-2. Emoji-only interaction
+1. Emoji-only interaction
 Communication constraints:
 
 No custom text input.
@@ -150,7 +152,7 @@ Quick-access favorites or recent emojis.
 
 Simple cooldowns or rate limiting to avoid spam.
 
-3. Avatars, pets, and cosmetics
+1. Avatars, pets, and cosmetics
 Avatar system:
 
 Each player has a stylized avatar.
@@ -213,7 +215,7 @@ Store catalog.
 
 Transactions and balances for virtual currency.
 
-4. Mini-games and core loop
+1. Mini-games and core loop
 Core loop:
 
 Enter world → play quick activities → earn coins and cosmetics → customize avatar/pets → repeat.

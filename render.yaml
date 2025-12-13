@@ -2,7 +2,6 @@ services:
   - type: web
     name: emoji-city-madness
     runtime: node
-    env: node
     plan: free
     buildCommand: npm install && npm run build
     startCommand: npm start
